@@ -1,0 +1,30 @@
+.main {
+    margin-top: 200px;
+    margin-left: 500px;
+    width: 50%;
+    height: 40%;
+    border: 3px solid red;
+}
+
+.words {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.word {
+    font-size: 48px;
+}
+
+.input {
+    margin-top: 200px;
+}
+
+.main-input {
+    width: 40%;
+    height: 40%;
+}
+
+.written {
+    color: rgb(139, 139, 139);
+}

@@ -1,6 +1,18 @@
 log = console.log
 
+const WORD_AMOUNT = 10;
 var keystrokes = 0;
+
+async function readWords() {
+    var newWords = [];
+    const response = await fetch('./words.txt')
+    const words = await response.text()
+    const wordList = words.split("\n")
+    for (let i=0; i<wordList.length; ++i) {
+        newWords.push(wordList[i].replace("\r", ""))
+    }
+    return newWords
+}
 
 function wordsLeft() {
     var left = 0;
@@ -49,7 +61,33 @@ function displayStats(seconds) {
     document.getElementById("wpm").textContent = wpm
 }
 
-document.addEventListener("DOMContentLoaded", function(event) {
+function getRandom(arr, n) {
+    var result = new Array(n),
+        len = arr.length,
+        taken = new Array(len);
+    if (n > len)
+        throw new RangeError("getRandom: more elements taken than available");
+    while (n--) {
+        var x = Math.floor(Math.random() * len);
+        result[n] = arr[x in taken ? taken[x] : x];
+        taken[x] = --len in taken ? taken[len] : len;
+    }
+    return result;
+}
+
+async function placeWords() {
+    const words = await readWords();
+    const selectedWords = getRandom(words, WORD_AMOUNT)
+    for (let i=0; i<selectedWords.length; ++i) {
+        const wordElement = document.createElement("p");
+        wordElement.classList.add("word")
+        wordElement.textContent = selectedWords[i]
+        document.getElementById('words').appendChild(wordElement);  
+    }
+}
+
+document.addEventListener("DOMContentLoaded", async function(event) {
+    await placeWords();
     const input = document.getElementById("input")
     var firstInput = false; 
     const timer = new easytimer.Timer();

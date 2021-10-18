@@ -12,7 +12,13 @@
     justify-content: space-between;
 }
 
+.refresh {
+    margin-bottom: 50px;
+}
+
 .word {
+    margin-top: -20px;
+    margin-left: 10px;
     font-size: 48px;
 }
 

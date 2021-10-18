@@ -46,12 +46,7 @@ function wordWritten(currentWord) {
 
 function calculateWPM(time) {
     const minutes = time / 60
-    log(minutes)
-    log(keystrokes)
-    log(keystrokes / 5)
-    log((keystrokes / 5) / minutes)
-
-    const wpm = (keystrokes / 5) / minutes
+    const wpm = Math.round((keystrokes / 5) / minutes, 3)
     return wpm
 }
 
@@ -86,7 +81,14 @@ async function placeWords() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", async function(event) {
+async function clearWords() {
+    var words = document.getElementById("words")
+    while (words.firstChild) {
+        words.removeChild(words.lastChild);
+      }
+}
+
+async function main() {
     await placeWords();
     const input = document.getElementById("input")
     var firstInput = false; 
@@ -108,4 +110,13 @@ document.addEventListener("DOMContentLoaded", async function(event) {
             displayStats(totalSeconds)
         }
     };
+}
+
+document.addEventListener("DOMContentLoaded", async function(event) {
+    const refresh = document.getElementById("refresh")
+    refresh.onclick = async function() {
+        await clearWords()
+        await main()
+    }
+    await main()
 });

@@ -70,22 +70,28 @@ function getRandom(arr, n) {
     return result;
 }
 
+// Creates a "word" div in the "words" div, places an array of letters in it to allow easy mistake highlighting.
 async function placeWords() {
     const words = await readWords();
     const selectedWords = getRandom(words, WORD_AMOUNT)
     for (let i=0; i<selectedWords.length; ++i) {
-        const wordElement = document.createElement("p");
+        const wordElement = document.createElement("div");
         wordElement.classList.add("word")
-        wordElement.textContent = selectedWords[i]
+        for (let j=0; j<selectedWords[i].length; ++j) {
+            const letterElement = document.createElement("letter")
+            letterElement.textContent = selectedWords[i][j]
+            wordElement.appendChild(letterElement)
+        }
         document.getElementById('words').appendChild(wordElement);  
     }
 }
 
+// Clears all of the words on the screen
 async function clearWords() {
     var words = document.getElementById("words")
     while (words.firstChild) {
         words.removeChild(words.lastChild);
-      }
+    }
 }
 
 async function main() {
@@ -95,19 +101,26 @@ async function main() {
     const timer = new easytimer.Timer();
     input.oninput = function(){
         if (!firstInput) {
-            log("timer started")
             timer.start({ precision: "secondTenths" });
             firstInput = true;
         }
         const text = input.value
         const wLeft = wordsLeft()
         const currentWord = getCurrentWord()
+        if (text[text.length-1] === " ") {
+            wordWritten(currentWord)
+        }
         if (wLeft > 1 && text === currentWord.textContent+" ") wordWritten(currentWord)
         if (wLeft === 1 && text === currentWord.textContent) {
             wordWritten(currentWord)
             const time = timer.getTimeValues()
             const totalSeconds = time.seconds + time.secondTenths / 10
             displayStats(totalSeconds)
+        }
+        if (currentWord.textContent[text.length-1] !== text[text.length-1]) {
+            var elements = currentWord.children
+            const m = elements.item(text.length-1)
+            m.classList.add("typo")
         }
     };
 }

@@ -6,10 +6,15 @@
     border: 3px solid red;
 }
 
+
 .words {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
+}
+
+.typo {
+    color: red;
 }
 
 .refresh {

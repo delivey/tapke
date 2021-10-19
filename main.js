@@ -94,12 +94,19 @@ async function clearWords() {
     }
 }
 
+async function endGame(timer, currentWord) {
+    wordWritten(currentWord)
+    const time = timer.getTimeValues()
+    const totalSeconds = time.seconds + time.secondTenths / 10
+    displayStats(totalSeconds)
+}
+
 async function main() {
     await placeWords();
     const input = document.getElementById("input")
     var firstInput = false; 
     const timer = new easytimer.Timer();
-    input.oninput = function(){
+    input.oninput = async function(){
         if (!firstInput) {
             timer.start({ precision: "secondTenths" });
             firstInput = true;
@@ -107,20 +114,25 @@ async function main() {
         const text = input.value
         const wLeft = wordsLeft()
         const currentWord = getCurrentWord()
-        if (text[text.length-1] === " ") {
+        if (text[text.length-1] === " ") { // Word skipped
+            var elements = currentWord.children
+            log(elements, text.length-1, currentWord)
+            for (let i=text.length-1; i<currentWord.textContent.length; ++i) {
+                log(i)
+                const m = elements[i]
+                m.classList.add("typo")
+            }
             wordWritten(currentWord)
+            if (wLeft === 1) await endGame(timer, currentWord)
         }
         if (wLeft > 1 && text === currentWord.textContent+" ") wordWritten(currentWord)
         if (wLeft === 1 && text === currentWord.textContent) {
-            wordWritten(currentWord)
-            const time = timer.getTimeValues()
-            const totalSeconds = time.seconds + time.secondTenths / 10
-            displayStats(totalSeconds)
+            await endGame(timer, currentWord)
         }
         if (currentWord.textContent[text.length-1] !== text[text.length-1]) {
             var elements = currentWord.children
             const m = elements.item(text.length-1)
-            m.classList.add("typo")
+            if (m) m.classList.add("typo")
         }
     };
 }

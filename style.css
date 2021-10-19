@@ -6,6 +6,15 @@
     border: 3px solid red;
 }
 
+h1 {
+    padding-left: 20px;
+    display: inline-block;
+}
+
+.stats {
+    white-space: nowrap;
+    overflow-x: auto;
+}
 
 .words {
     display: flex;

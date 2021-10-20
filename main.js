@@ -51,10 +51,11 @@ function calculateWPM(time) {
     return wpm
 }
 
-function displayStats(seconds, wpm, accuracy) {
+function displayStats(seconds, raw_wpm, accuracy, wpm) {
     document.getElementById("time").textContent = seconds
-    document.getElementById("raw_wpm").textContent = wpm
+    document.getElementById("raw_wpm").textContent = raw_wpm
     document.getElementById("accuracy").textContent = accuracy
+    document.getElementById("wpm").textContent = wpm
 }
 
 function getRandom(arr, n) {
@@ -103,16 +104,17 @@ function calculateAccuracy() {
         else total++;
     }
     cnt = total - cnt;
-    return Math.round((cnt / total) * 100, 1) + "%"
+    return Math.round((cnt / total) * 100, 1)
 }
 
 async function endGame(timer, currentWord) {
     wordWritten(currentWord)
     const time = timer.getTimeValues()
     const totalSeconds = time.seconds + time.secondTenths / 10
-    const wpm = calculateWPM(totalSeconds)
+    const raw_wpm = calculateWPM(totalSeconds)
     const accuracy = calculateAccuracy()
-    displayStats(totalSeconds, wpm, accuracy)
+    const wpm = raw_wpm * (accuracy / 100);
+    displayStats(totalSeconds, raw_wpm, accuracy+"%", wpm)
 }
 
 async function main() {

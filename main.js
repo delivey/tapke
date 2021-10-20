@@ -1,5 +1,6 @@
 log = console.log
 
+const REFRESH_KEY = "Tab"
 const WORD_AMOUNT = 10;
 var keystrokes = 0;
 
@@ -180,11 +181,28 @@ async function main() {
     };
 }
 
+document.onkeydown = async function(e) {
+    if (e.key === REFRESH_KEY) {
+        e.preventDefault();
+        await refresh()
+    }
+};
+
+async function refresh() {
+    document.getElementById("time").textContent = 0
+    document.getElementById("raw_wpm").textContent = 0
+    document.getElementById("accuracy").textContent = 0
+    document.getElementById("wpm").textContent = 0
+
+    input.value = ""
+    await clearWords()
+    await main()
+}
+
 document.addEventListener("DOMContentLoaded", async function(event) {
+    await main()
     const refresh = document.getElementById("refresh")
     refresh.onclick = async function() {
-        await clearWords()
-        await main()
+        await refresh()
     }
-    await main()
 });

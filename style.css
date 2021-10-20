@@ -1,3 +1,7 @@
+body {
+    font-family: "Open Sans";
+}
+
 .main {
     margin-top: 200px;
     margin-left: 500px;
@@ -19,7 +23,13 @@ h1 {
 .words {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+}
+
+.word {
+    font-weight: 600;
+    margin-top: -20px;
+    margin-left: 20px;
+    font-size: 48px;
 }
 
 .typo {
@@ -28,12 +38,6 @@ h1 {
 
 .refresh {
     margin-bottom: 50px;
-}
-
-.word {
-    margin-top: -20px;
-    margin-left: 10px;
-    font-size: 48px;
 }
 
 .input {

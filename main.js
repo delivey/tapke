@@ -101,8 +101,8 @@ function calculateAccuracy() {
     var el = document.getElementsByTagName("letter");
     var cnt = 0, total = 0
     for (var i = 0; i < el.length; i++) {
+        total++;
         if (el[i].className == 'typo') cnt++;
-        else total++;
     }
     cnt = total - cnt;
     return Math.round((cnt / total) * 100, 1)

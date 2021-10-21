@@ -1,13 +1,18 @@
 body {
     font-family: "Open Sans";
+    background-color: black;
+    color: white;
 }
 
 .main {
-    margin-top: 200px;
+    margin-top: 50px;
     margin-left: 500px;
-    width: 50%;
+    width: 60%;
     height: 40%;
-    border: 3px solid red;
+}
+
+.typing {
+    margin-top: 300px;
 }
 
 h1 {
@@ -29,7 +34,7 @@ h1 {
     font-weight: 600;
     margin-top: -20px;
     margin-left: 20px;
-    font-size: 48px;
+    font-size: 80px;
 }
 
 .typo {
@@ -45,8 +50,8 @@ h1 {
 }
 
 .main-input {
-    width: 40%;
-    height: 40%;
+    width: 60%;
+    height: 60%;
 }
 
 .written {

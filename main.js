@@ -5,38 +5,20 @@ const WORD_AMOUNT = 10;
 var keystrokes = 0;
 
 async function readWords() {
-    var newWords = [];
     const response = await fetch('./words.txt')
     const words = await response.text()
     const wordList = words.split("\n")
-    for (let i=0; i<wordList.length; ++i) {
-        newWords.push(wordList[i].replace("\r", "").toLowerCase())
-    }
-    return newWords
+    return wordList.map(word => word.replace("\r", "").toLowerCase());
 }
 
 function wordsLeft() {
-    var left = 0;
-    var elements = document.getElementById('words').children;
-    for (let i=0; i<elements.length; ++i) {
-        const element = elements[i]
-        const cl = Array.from(element.classList)
-        if (!cl.includes("written")) {
-            left++;
-        }
-    }
-    return left;
+    const elements = document.getElementById('words').children;
+    return [...elements].reduce((prev, curr) => curr.classList.contains('written') ? prev : ++prev, 0);
 }
 
 function getCurrentWord() {
-    var elements = document.getElementById('words').children;
-    for (let i=0; i<elements.length; ++i) {
-        const element = elements[i]
-        const cl = Array.from(element.classList)
-        if (!cl.includes("written")) {
-            return element
-        }
-    }
+    const elements = document.getElementById('words').children;
+    return [...elements].find(e => !e.classList.contains('written'));
 }
 
 function wordWritten(currentWord) {
@@ -123,7 +105,7 @@ function isLetter(str) {
 
 async function main() {
     await placeWords();
-    var firstInput = false; 
+    var firstInput = false;
     const timer = new easytimer.Timer();
     var text = ""
 

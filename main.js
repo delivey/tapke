@@ -10,7 +10,7 @@ async function readWords() {
     const words = await response.text()
     const wordList = words.split("\n")
     for (let i=0; i<wordList.length; ++i) {
-        newWords.push(wordList[i].replace("\r", ""))
+        newWords.push(wordList[i].replace("\r", "").toLowerCase())
     }
     return newWords
 }
@@ -42,21 +42,20 @@ function getCurrentWord() {
 function wordWritten(currentWord) {
     keystrokes += currentWord.textContent.length;
     currentWord.classList.add("written")
-    input.value = ""
 }
 
 function calculateWPM(time) {
     const minutes = time / 60
     log(keystrokes, minutes)
-    const wpm = Math.round((keystrokes / 5) / minutes, 3)
+    const wpm = (keystrokes / 5) / minutes
     return wpm
 }
 
 function displayStats(seconds, raw_wpm, accuracy, wpm) {
     document.getElementById("time").textContent = seconds
-    document.getElementById("raw_wpm").textContent = raw_wpm
+    document.getElementById("raw_wpm").textContent = Math.round(raw_wpm, 2)
     document.getElementById("accuracy").textContent = accuracy
-    document.getElementById("wpm").textContent = wpm
+    document.getElementById("wpm").textContent = Math.round(wpm, 2)
 }
 
 function getRandom(arr, n) {
@@ -110,6 +109,7 @@ function calculateAccuracy() {
 
 async function endGame(timer, currentWord) {
     wordWritten(currentWord)
+    text = ""
     const time = timer.getTimeValues()
     const totalSeconds = time.seconds + time.secondTenths / 10
     const raw_wpm = calculateWPM(totalSeconds)
@@ -118,18 +118,33 @@ async function endGame(timer, currentWord) {
     displayStats(totalSeconds, raw_wpm, accuracy+"%", wpm)
 }
 
+function isLetter(str) {
+    return str.length === 1 && str.match(/[a-z]/i);
+}
+
 async function main() {
     var lastState = ""
     await placeWords();
-    const input = document.getElementById("input")
     var firstInput = false; 
     const timer = new easytimer.Timer();
-    input.oninput = async function(){
+    var text = ""
+    document.onkeydown = async function(e) {
+
+        log(e.key, text)
+        if (e.key === REFRESH_KEY) {
+            text = ""
+            e.preventDefault()
+            await refresh()
+        }
+        if (isLetter(e.key) || e.key === " ") {
+            e.preventDefault();
+            text += e.key;
+        }
+
         if (!firstInput) {
             timer.start({ precision: "secondTenths" });
             firstInput = true;
         }
-        const text = input.value
         const wLeft = wordsLeft()
         const currentWord = getCurrentWord()
 
@@ -144,19 +159,21 @@ async function main() {
         }
         if (text[text.length-1] === " ") { // Word skipped
             var elements = currentWord.children
-            log(elements, text.length-1, currentWord)
             for (let i=text.length-1; i<currentWord.textContent.length; ++i) {
-                log(i)
                 const m = elements[i]
                 m.classList.add("typo")
             }
             wordWritten(currentWord)
+            text = ""
             if (wLeft === 1) await endGame(timer, currentWord)
         }
         //
 
         // Checks if word was typed
-        if (wLeft > 1 && text === currentWord.textContent+" ") wordWritten(currentWord)
+        if (wLeft > 1 && text === currentWord.textContent+" ") {
+            text = ""
+            wordWritten(currentWord)
+        }
         if (wLeft === 1 && text === currentWord.textContent) {
             await endGame(timer, currentWord)
         }
@@ -175,34 +192,20 @@ async function main() {
             const m = elements.item(text.length-1)
             if (m) m.classList.add("written")
         }
-
         // For typo correction
         lastState = text.replace(" ", "")
     };
 }
-
-document.onkeydown = async function(e) {
-    if (e.key === REFRESH_KEY) {
-        e.preventDefault();
-        await refresh()
-    }
-};
 
 async function refresh() {
     document.getElementById("time").textContent = 0
     document.getElementById("raw_wpm").textContent = 0
     document.getElementById("accuracy").textContent = 0
     document.getElementById("wpm").textContent = 0
-
-    input.value = ""
     await clearWords()
     await main()
 }
 
 document.addEventListener("DOMContentLoaded", async function(event) {
     await main()
-    const refresh = document.getElementById("refresh")
-    refresh.onclick = async function() {
-        await refresh()
-    }
-});
+})

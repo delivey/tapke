@@ -46,7 +46,6 @@ function wordWritten(currentWord) {
 
 function calculateWPM(time) {
     const minutes = time / 60
-    log(keystrokes, minutes)
     const wpm = (keystrokes / 5) / minutes
     return wpm
 }
@@ -123,14 +122,12 @@ function isLetter(str) {
 }
 
 async function main() {
-    var lastState = ""
     await placeWords();
     var firstInput = false; 
     const timer = new easytimer.Timer();
     var text = ""
     document.onkeydown = async function(e) {
 
-        log(e.key, text)
         if (e.key === REFRESH_KEY) {
             text = ""
             e.preventDefault()
@@ -149,14 +146,15 @@ async function main() {
         const currentWord = getCurrentWord()
 
         // Typo catching and removal
-        if (text.length < lastState.length) {
+        if (e.key === "Backspace") {
             try {
                 const element = currentWord.children.item(lastState.length-1)
-                if (element.classList.contains("typo")) {
-                    element.classList.remove("typo")
-                }   
+                element.classList.remove("written")
+                element.classList.remove("typo")
+                text = text.slice(0, -1)
             } catch (e) {}
         }
+
         if (text[text.length-1] === " ") { // Word skipped
             var elements = currentWord.children
             for (let i=text.length-1; i<currentWord.textContent.length; ++i) {
@@ -192,8 +190,6 @@ async function main() {
             const m = elements.item(text.length-1)
             if (m) m.classList.add("written")
         }
-        // For typo correction
-        lastState = text.replace(" ", "")
     };
 }
 

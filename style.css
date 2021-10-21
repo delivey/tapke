@@ -5,18 +5,18 @@ body {
 }
 
 .main {
-    margin-top: 50px;
-    margin-left: 500px;
+    margin-top: 2%;
+    margin-left: 20%;
     width: 60%;
     height: 40%;
 }
 
 .typing {
-    margin-top: 300px;
+    margin-top: 20%;
 }
 
 h1 {
-    padding-left: 20px;
+    padding-left: 1%;
     display: inline-block;
 }
 
@@ -32,19 +32,32 @@ h1 {
 
 .word {
     font-weight: 600;
-    margin-top: -20px;
-    margin-left: 20px;
-    font-size: 80px;
+    margin-top: -1%;
+    margin-left: 0.3em;
+    font-size: calc(1em + 3.5vw);
 }
 
 .typo {
     color: red;
 }
 
-.refresh {
-    margin-bottom: 50px;
-}
-
 .written {
     color: rgb(139, 139, 139);
+}
+
+/* For mobile phones: */
+@media only screen and (max-width: 768px) {
+    .stats {
+        overflow: auto;
+        height: 120%;
+    }
+    h1 {
+        height: 100%;
+        font-size: 4vw;
+        display: list-item;
+        word-break: break-word;
+    }
+    h1:not(:last-child) {
+        margin-bottom: -2.5vw;
+    }
 }

@@ -126,6 +126,7 @@ async function main() {
     var firstInput = false; 
     const timer = new easytimer.Timer();
     var text = ""
+
     document.onkeydown = async function(e) {
 
         if (e.key === REFRESH_KEY) {
@@ -203,5 +204,19 @@ async function refresh() {
 }
 
 document.addEventListener("DOMContentLoaded", async function(event) {
+    /*
+    // Mobile handling (WIP)
+    const isMobile = navigator.userAgentData.mobile;
+    if (isMobile) {
+        var input = document.createElement("input");
+        input.setAttribute('id','input');
+    }
+    window.onclick = e => {
+        if (isMobile) {
+            document.getElementById("input").focus();
+            document.getElementById("input").click();
+        }
+    } 
+    */
     await main()
 })

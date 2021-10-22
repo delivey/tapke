@@ -4,6 +4,10 @@ body {
     color: white;
 }
 
+p {
+    display: inline-block;
+}
+
 .main {
     margin-top: 2%;
     margin-left: 15%;

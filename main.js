@@ -62,7 +62,7 @@ async function placeWords() {
         const wordElement = document.createElement("div");
         wordElement.classList.add("word")
         for (let j=0; j<selectedWords[i].length; ++j) {
-            const letterElement = document.createElement("letter")
+            const letterElement = document.createElement("p")
             letterElement.textContent = selectedWords[i][j]
             wordElement.appendChild(letterElement)
         }
@@ -80,7 +80,7 @@ async function clearWords() {
 }
 
 function calculateAccuracy() {
-    var el = document.getElementsByTagName("letter");
+    var el = document.getElementsByTagName("p");
     var total = 0
     for (var i = 0; i < el.length; i++) {
         total++;
@@ -183,7 +183,8 @@ async function main() {
             } else { // Letter typed
                 var elements = currentWord.children
                 const m = elements.item(text.length-1)
-                if (m) m.classList.add("written")
+                log(text, m)
+                m.className = "written"
             }
         };
     }

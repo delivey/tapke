@@ -37,12 +37,12 @@ h1 {
     font-size: calc(1em + 3.5vw);
 }
 
-.typo {
-    color: red;
-}
-
 .written {
     color: rgb(139, 139, 139);
+}
+
+.typo {
+    color: red;
 }
 
 /* For mobile phones: */

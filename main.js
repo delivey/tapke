@@ -13,17 +13,17 @@ async function readWords() {
 
 function wordsLeft() {
     const elements = document.getElementById('words').children;
-    return [...elements].reduce((prev, curr) => curr.classList.contains('written') ? prev : ++prev, 0);
+    return [...elements].reduce((prev, curr) => curr.classList.contains('written-word') ? prev : ++prev, 0);
 }
 
 function getCurrentWord() {
     const elements = document.getElementById('words').children;
-    return [...elements].find(e => !e.classList.contains('written'));
+    return [...elements].find(e => !e.classList.contains('written-word'));
 }
 
 function wordWritten(currentWord) {
     keystrokes += currentWord.textContent.length;
-    currentWord.classList.add("written")
+    currentWord.classList.add("written-word")
 }
 
 function calculateWPM(time) {
@@ -97,7 +97,6 @@ async function endGame(timer, currentWord) {
     const raw_wpm = calculateWPM(totalSeconds)
     const accuracy = calculateAccuracy()
     const wpm = raw_wpm * (accuracy / 100);
-    log(keystrokes)
     displayStats(totalSeconds, raw_wpm, accuracy+"%", wpm)
 }
 
@@ -109,8 +108,8 @@ async function main() {
     await placeWords();
     var firstInput = false;
     const timer = new easytimer.Timer();
+    var fullText = ""
     var text = ""
-
     document.onkeydown = async function(e) {
 
         if (e.key === REFRESH_KEY) {
@@ -121,61 +120,72 @@ async function main() {
         if (isLetter(e.key) || e.key === " ") {
             e.preventDefault();
             text += e.key;
+            fullText += e.key
         }
+
+        log(text)
 
         if (!firstInput) {
             timer.start({ precision: "secondTenths" });
             firstInput = true;
         }
         const wLeft = wordsLeft()
-        const currentWord = getCurrentWord()
+        var currentWord = getCurrentWord()
 
-        // Typo catching and removal
+        // Backspace functionality
         if (e.key === "Backspace") {
-            try {
-                const element = currentWord.children.item(lastState.length-1)
-                element.classList.remove("written")
-                element.classList.remove("typo")
-                text = text.slice(0, -1)
-            } catch (e) {}
-        }
-
-        if (text[text.length-1] === " ") { // Word skipped
-            var elements = currentWord.children
-            for (let i=text.length-1; i<currentWord.textContent.length; ++i) {
-                const m = elements[i]
-                m.classList.add("typo")
+            fullText = fullText.slice(0, -1)
+            if (fullText.charAt(fullText.length-1) === " ") {
+                fullText = fullText.slice(0, -2)
             }
-            wordWritten(currentWord)
-            text = ""
-            if (wLeft === 1) await endGame(timer, currentWord)
-        }
-        //
+            textTemp = fullText.split(" ").filter(i => i)
+            text = textTemp[textTemp.length-1]
 
-        // Checks if word was typed
-        if (wLeft > 1 && text === currentWord.textContent+" ") {
-            text = ""
-            wordWritten(currentWord)
-        }
-        if (wLeft === 1 && text === currentWord.textContent) {
-            await endGame(timer, currentWord)
-        }
-        //
-
-        // Typo check (to allow for mistakes)
-        if (currentWord.textContent[text.length-1] !== text[text.length-1]) {
-            var elements = currentWord.children
-            const m = elements.item(text.length-1)
-            if (m) m.classList.add("typo")
-            var typoMade = true;
-        }
-        //
-        if (!typoMade) {
-            var elements = currentWord.children
-            const m = elements.item(text.length-1)
-            if (m) m.classList.add("written")
-        }
-    };
+            const lastLetters = document.getElementsByClassName("written")
+            const lastLetter = lastLetters[lastLetters.length-1]
+            lastLetter.classList.remove("written")
+            lastLetter.classList.remove("typo")
+            lastLetter.parentElement.classList.remove("written-word")
+            currentWord = getCurrentWord()
+        } else {
+            if (text[text.length-1] === " ") { // Word skipped
+                var elements = currentWord.children
+                for (let i=text.length-1; i<currentWord.textContent.length; ++i) {
+                    const m = elements[i]
+                    m.classList.add("typo")
+                }
+                wordWritten(currentWord)
+                text = ""
+                fullText += " "
+                if (wLeft === 1) await endGame(timer, currentWord)
+            }
+            //
+    
+            // Checks if word was typed
+            if (wLeft > 1 && text === currentWord.textContent+" ") {
+                text = ""
+                fullText += " "
+                wordWritten(currentWord)
+            }
+            if (wLeft === 1 && text === currentWord.textContent) {
+                await endGame(timer, currentWord)
+            }
+            //
+    
+            // Typo check (to allow for mistakes)
+            if (currentWord.textContent[text.length-1] !== text[text.length-1]) {
+                var elements = currentWord.children
+                const m = elements.item(text.length-1)
+                if (m) {
+                    m.className = "typo written"
+                }
+            } else { // Letter typed
+                var elements = currentWord.children
+                const m = elements.item(text.length-1)
+                if (m) m.classList.add("written")
+            }
+        };
+    }
 }
 
 async function refresh() {

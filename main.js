@@ -3,6 +3,7 @@ log = console.log
 const REFRESH_KEY = "Tab"
 const WORD_AMOUNT = 10;
 var keystrokes = 0;
+var mistakes = 0;
 
 async function readWords() {
     const response = await fetch('./words.txt')
@@ -80,13 +81,12 @@ async function clearWords() {
 
 function calculateAccuracy() {
     var el = document.getElementsByTagName("letter");
-    var cnt = 0, total = 0
+    var total = 0
     for (var i = 0; i < el.length; i++) {
         total++;
-        if (el[i].className == 'typo') cnt++;
     }
-    cnt = total - cnt;
-    return Math.round((cnt / total) * 100, 1)
+    mistakes = total - mistakes;
+    return Math.round((mistakes / total) * 100, 1)
 }
 
 async function endGame(timer, currentWord) {
@@ -177,6 +177,7 @@ async function main() {
                 var elements = currentWord.children
                 const m = elements.item(text.length-1)
                 if (m) {
+                    ++mistakes;
                     m.className = "typo written"
                 }
             } else { // Letter typed

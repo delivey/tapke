@@ -89,6 +89,7 @@ async function placeWords() {
 
 // Clears all of the words on the screen
 async function clearWords() {
+    keystrokes = 0
     var words = document.getElementById("words")
     while (words.firstChild) {
         words.removeChild(words.lastChild);
@@ -114,6 +115,7 @@ async function endGame(timer, currentWord) {
     const raw_wpm = calculateWPM(totalSeconds)
     const accuracy = calculateAccuracy()
     const wpm = raw_wpm * (accuracy / 100);
+    log(keystrokes)
     displayStats(totalSeconds, raw_wpm, accuracy+"%", wpm)
 }
 

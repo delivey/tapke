@@ -85,7 +85,7 @@ function calculateAccuracy() {
     for (var i = 0; i < el.length; i++) {
         total++;
     }
-    mistakes = total - mistakes;
+    mistakes = total - mistakes
     return Math.round((mistakes / total) * 100, 1)
 }
 

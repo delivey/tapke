@@ -28,8 +28,7 @@ function wordWritten(currentWord) {
 }
 
 function calculateWPM(time) {
-    const minutes = time / 60
-    const wpm = (keystrokes / 5) / minutes
+    const wpm = (keystrokes / 5) / (time / 60)
     return wpm
 }
 
@@ -54,7 +53,7 @@ function getRandom(arr, n) {
     return result;
 }
 
-// Creates a "word" div in the "words" div, places an array of letters in it to allow easy mistake highlighting.
+// Creates a "word" div in the "words" div, places an array of letters (p) in it to allow easy mistake highlighting.
 async function placeWords() {
     const words = await readWords();
     const selectedWords = getRandom(words, WORD_AMOUNT)
@@ -72,7 +71,6 @@ async function placeWords() {
 
 // Clears all of the words on the screen
 async function clearWords() {
-    keystrokes = 0
     var words = document.getElementById("words")
     while (words.firstChild) {
         words.removeChild(words.lastChild);
@@ -80,16 +78,14 @@ async function clearWords() {
 }
 
 function calculateAccuracy() {
-    var el = document.getElementsByTagName("p");
-    var total = 0
-    for (var i = 0; i < el.length; i++) {
-        total++;
-    }
+    const total = document.getElementsByTagName("p").length;
     mistakes = total - mistakes
     return Math.round((mistakes / total) * 100, 1)
 }
 
 async function endGame(timer, currentWord) {
+    keystrokes = 0
+    mistakes = 0
     wordWritten(currentWord)
     text = ""
     const time = timer.getTimeValues()
@@ -123,8 +119,6 @@ async function main() {
             fullText += e.key
         }
 
-        log(text)
-
         if (!firstInput) {
             timer.start({ precision: "secondTenths" });
             firstInput = true;
@@ -143,9 +137,7 @@ async function main() {
 
             const lastLetters = document.getElementsByClassName("written")
             const lastLetter = lastLetters[lastLetters.length-1]
-            lastLetter.classList.remove("written")
-            lastLetter.classList.remove("typo")
-            lastLetter.parentElement.classList.remove("written-word")
+            lastLetter.className = ""
             currentWord = getCurrentWord()
         } else {
             if (text[text.length-1] === " ") { // Word skipped
@@ -159,18 +151,13 @@ async function main() {
                 fullText += " "
                 if (wLeft === 1) await endGame(timer, currentWord)
             }
-            //
     
-            // Checks if word was typed
-            if (wLeft > 1 && text === currentWord.textContent+" ") {
+            if (wLeft > 1 && text === currentWord.textContent+" ") { // Checks if word was fully typed
                 text = ""
                 fullText += " "
                 wordWritten(currentWord)
             }
-            if (wLeft === 1 && text === currentWord.textContent) {
-                await endGame(timer, currentWord)
-            }
-            //
+            if (wLeft === 1 && text === currentWord.textContent) await endGame(timer, currentWord)
     
             // Typo check (to allow for mistakes)
             if (currentWord.textContent[text.length-1] !== text[text.length-1]) {
@@ -183,8 +170,7 @@ async function main() {
             } else { // Letter typed
                 var elements = currentWord.children
                 const m = elements.item(text.length-1)
-                log(text, m)
-                m.className = "written"
+                if (m) m.className = "written"
             }
         };
     }

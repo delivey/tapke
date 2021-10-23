@@ -84,8 +84,6 @@ function calculateAccuracy() {
 }
 
 async function endGame(timer, currentWord) {
-    keystrokes = 0
-    mistakes = 0
     wordWritten(currentWord)
     text = ""
     const time = timer.getTimeValues()
@@ -93,6 +91,8 @@ async function endGame(timer, currentWord) {
     const raw_wpm = calculateWPM(totalSeconds)
     const accuracy = calculateAccuracy()
     const wpm = raw_wpm * (accuracy / 100);
+    keystrokes = 0
+    mistakes = 0
     displayStats(totalSeconds, raw_wpm, accuracy+"%", wpm)
 }
 

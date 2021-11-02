@@ -1,67 +1,73 @@
 body {
-    font-family: "Open Sans";
-    background-color: black;
-    color: white;
+	font-family: "Open Sans";
+	background-color: black;
+	color: white;
 }
 
 p {
-    display: inline-block;
+	display: inline-block;
 }
 
 .main {
-    margin-top: 2%;
-    margin-left: 15%;
-    width: 80%;
-    height: 40%;
+	margin-top: 2%;
+	margin-left: 15%;
+	width: 80%;
+	height: 40%;
+}
+
+.instant:nth-child(n + 2) {
+	margin-left: 40px;
+}
+
+.instant-stats {
+	margin-left: 1%;
+	color: rgb(0, 255, 0);
+	font-weight: bold;
+	font-size: 40px;
 }
 
 .typing {
-    margin-top: 20%;
+	margin-top: 15%;
 }
 
 h1 {
-    padding-left: 1%;
-    display: inline-block;
-}
-
-.stats {
-    white-space: nowrap;
-    overflow-x: auto;
+	padding-left: 1%;
+	display: inline-block;
 }
 
 .words {
-    display: flex;
-    flex-wrap: wrap;
+	display: flex;
+	flex-wrap: wrap;
 }
 
 .word {
-    font-weight: 600;
-    margin-top: -1%;
-    margin-left: 0.3em;
-    font-size: calc(1em + 1.5vw);
+	font-weight: 600;
+	margin-top: -1%;
+	margin-left: 0.3em;
+	font-size: calc(1em + 1.5vw);
 }
 
 .written {
-    color: rgb(139, 139, 139);
+	color: rgb(139, 139, 139);
 }
 
 .typo {
-    color: red;
+	color: red;
 }
 
 /* For mobile phones: */
 @media only screen and (max-width: 768px) {
-    .stats {
-        overflow: auto;
-        height: 120%;
-    }
-    h1 {
-        height: 100%;
-        font-size: 4vw;
-        display: list-item;
-        word-break: break-word;
-    }
-    h1:not(:last-child) {
-        margin-bottom: -2.5vw;
-    }
+	.stats {
+		overflow: auto;
+		height: 120%;
+	}
+	h1 {
+		height: 100%;
+		font-size: 4vw;
+		display: list-item;
+		word-break: break-word;
+	}
+	h1:not(:last-child) {
+		margin-bottom: -2.5vw;
+	}
 }
